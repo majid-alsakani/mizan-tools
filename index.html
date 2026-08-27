@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="أدوات مجانية محلية لفحص RTL وملفات الترجمة وتباين الألوان دون رفع كودك أو بياناتك." />
+    <meta name="theme-color" content="#0c1422" />
+    <title>Mizan Tools | أدوات جودة عربية للمطورين</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#tools">انتقل إلى الأدوات</a>
+    <div class="page-noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Mizan Tools الرئيسية"><span class="brand-mark" aria-hidden="true">م</span><span>Mizan <b>Tools</b></span></a>
+      <p>أدوات صغيرة، دقيقة، ومحلية أولًا.</p>
+      <a class="github-link" href="https://github.com/majid-alsakani" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__eyebrow"><i></i> أدوات عربية للمطورين والمصممين</div>
+        <h1 id="hero-title">افحص ما ينساه<br /><span>الترجمة وحدها.</span></h1>
+        <p>ابدأ من التفاصيل التي تكسر الواجهات: اتجاه النص، خصائص CSS، مفاتيح الترجمة، وتباين الألوان. تعمل الأدوات داخل المتصفح؛ لا نرفع النص الملصوق أو الملفات إلى خادم.</p>
+        <div class="hero__facts"><span><b>03</b> أدوات مجانية</span><span><b>0</b> ملفات مرفوعة</span><span><b>RTL</b> أولًا</span></div>
+      </section>
+
+      <section id="tools" class="tool-workbench" aria-labelledby="tools-title">
+        <div class="tool-workbench__head"><div><span class="eyebrow-label">منضدة الفحص</span><h2 id="tools-title">اختر أداة وابدأ الآن</h2></div><button id="copy-report" type="button">نسخ التقرير</button></div>
+        <div class="tool-tabs" role="tablist" aria-label="أدوات Mizan">
+          <button class="tool-tab is-active" data-tool-button="rtl" role="tab" aria-selected="true"><span>01</span> فاحص RTL وCSS</button>
+          <button class="tool-tab" data-tool-button="json" role="tab" aria-selected="false"><span>02</span> مقارنة الترجمة</button>
+          <button class="tool-tab" data-tool-button="contrast" role="tab" aria-selected="false"><span>03</span> فاحص التباين</button>
+        </div>
+
+        <section class="tool-panel" data-tool-panel="rtl" role="tabpanel" aria-label="فاحص RTL وCSS">
+          <div class="tool-panel__intro"><div><span class="eyebrow-label">Mizan RTL Scan</span><h3>خصائص منطقية بدل اتجاهات جامدة.</h3></div><p>ألصق HTML أو CSS. نحدد الخصائص المادية مثل <code>margin-left</code> ونقترح بدائل تتبع اتجاه اللغة.</p></div>
+          <form id="rtl-form" class="analysis-grid"><label class="input-group"><span>مصدر HTML أو CSS</span><textarea id="rtl-source" spellcheck="false" placeholder="&lt;html lang=&quot;ar&quot;&gt;\n.card { margin-left: 16px; text-align: left; }"></textarea></label><div class="result-box" id="rtl-results" aria-live="polite"><div class="empty-state"><strong>انتظر المصدر.</strong><span>لن يغادر النص هذا المتصفح.</span></div></div><button class="run-button" type="submit">فحص المصدر <span>↙</span></button></form>
+        </section>
+
+        <section class="tool-panel" data-tool-panel="json" role="tabpanel" aria-label="مقارنة ملفات الترجمة" hidden>
+          <div class="tool-panel__intro"><div><span class="eyebrow-label">Translation Key Diff</span><h3>طابق المفاتيح قبل أن تختفي الترجمة.</h3></div><p>قارن ملفي <code>ar.json</code> و<code>en.json</code> محليًا؛ نرصد المفاتيح الغائبة وتعارض الأنواع والمتغيرات.</p></div>
+          <form id="json-form" class="json-grid"><label class="input-group"><span>ar.json</span><textarea id="ar-json" dir="rtl" spellcheck="false" placeholder='{ "nav": { "home": "الرئيسية" } }'></textarea></label><label class="input-group"><span>en.json</span><textarea id="en-json" dir="ltr" spellcheck="false" placeholder='{ "nav": { "home": "Home" } }'></textarea></label><div class="result-box json-result-box" id="json-results" aria-live="polite"><div class="empty-state"><strong>ألصق الملفين للمقارنة.</strong><span>لن تُرسل مفاتيحك إلى أي خدمة.</span></div></div><button class="run-button" type="submit">مقارنة المفاتيح <span>↙</span></button></form>
+        </section>
+
+        <section class="tool-panel" data-tool-panel="contrast" role="tabpanel" aria-label="فاحص تباين اللون" hidden>
+          <div class="tool-panel__intro"><div><span class="eyebrow-label">Contrast Baseline</span><h3>تباين واضح قبل التفاصيل الجميلة.</h3></div><p>احسب نسبة التباين للونين ثابتين كنقطة بداية. لا تغني النتيجة عن الاختبار بالسياق الحقيقي أو المراجعة البشرية.</p></div>
+          <form id="contrast-form" class="contrast-grid"><div class="color-inputs"><label><span>لون النص</span><input id="foreground" type="color" value="#EAF4F0" /><input id="foregroundText" value="#EAF4F0" dir="ltr" /></label><label><span>لون الخلفية</span><input id="background" type="color" value="#0C1422" /><input id="backgroundText" value="#0C1422" dir="ltr" /></label></div><div class="contrast-preview" id="contrast-preview">نص عربي واضح<br /><small dir="ltr">Clear interface text</small></div><div class="result-box" id="contrast-results" aria-live="polite"><div class="empty-state"><strong>اختر اللونين ثم احسب النسبة.</strong></div></div><button class="run-button" type="submit">حساب التباين <span>↙</span></button></form>
+        </section>
+      </section>
+
+      <section class="principles" aria-labelledby="principles-title"><div><span class="eyebrow-label">وعد المنتج</span><h2 id="principles-title">قيمة صغيرة، بلا ادعاء كبير.</h2></div><div class="principles__list"><article><b>محلي أولًا</b><p>يبقى كل نص ملصوق ونتيجة أولية في المتصفح.</p></article><article><b>تفسير لا حكم</b><p>تعرض الأدوات ملاحظات قابلة للمراجعة، لا شهادات امتثال.</p></article><article><b>عربي من الأصل</b><p>الاتجاه واللغة والمحتوى المختلط جزء من الفحص، لا إضافة لاحقة.</p></article></div></section>
+    </main>
+    <footer><span>Mizan Tools · أدوات مفتوحة لبناء ويب أكثر شمولًا</span><a href="https://github.com/majid-alsakani/mizan-rtl" target="_blank" rel="noreferrer">مشروع Mizan RTL <span aria-hidden="true">↗</span></a></footer>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
