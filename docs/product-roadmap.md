@@ -11,8 +11,9 @@ Mizan Tools should become a recognizable collection of **Arabic-first engineerin
 | 1 | RTL & CSS Scan | Physical layout properties and missing direction metadata | Extends the existing Mizan CLI into a frictionless web entry point |
 | 2 | Translation Key Diff | Missing Arabic or English keys and broken placeholders | Gives localization teams a repeatable pre-merge check |
 | 3 | Contrast Baseline | Low contrast in components | Small, instant, and useful across every product language |
-| 4 | RTL Stress Preview | Reveal overflow with long Arabic labels | Delivered in the first web release as a local component preview |
-| 5 | Locale Metadata Validator | Missing `lang`, `dir`, and metadata contracts in JSON | Natural next step after key parity and stress testing |
+| 4 | Image Compressor | Large image assets delay web pages | Delivered locally with format, quality, resize, preview, and download controls |
+| 5 | RTL Stress Preview | Reveal overflow with long Arabic labels | Delivered in the first web release as a local component preview |
+| 6 | Locale Metadata Validator | Missing `lang`, `dir`, and metadata contracts in JSON | Natural next step after key parity, image hygiene, and stress testing |
 
 ## Growth approach
 

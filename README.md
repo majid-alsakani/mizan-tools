@@ -1,8 +1,8 @@
 # Mizan Tools
 
-> **Free, browser-local utilities for RTL, translation-key, and color-contrast checks.**
+> **Free, browser-local utilities for RTL, translation keys, color contrast, and image compression.**
 
-Mizan Tools is a small, Arabic-first tool platform for developers and designers. The first release runs entirely in the browser and includes four related checks: physical CSS properties that may break bidirectional layouts, differences between `ar.json` and `en.json`, a color-contrast baseline, and a RTL/LTR text-stress preview.
+Mizan Tools is a small, Arabic-first tool platform for developers and designers. The first release runs entirely in the browser and includes five related utilities: physical CSS properties that may break bidirectional layouts, differences between `ar.json` and `en.json`, a color-contrast baseline, a RTL/LTR text-stress preview, and local image compression.
 
 ## Why this focus?
 
@@ -16,6 +16,7 @@ The product intentionally begins with a narrow, repeated workflow rather than ge
 | **Translation Key Diff** | `ar.json` and `en.json` text | Missing keys, type differences, placeholder drift | Local only |
 | **Contrast Baseline** | Two HEX colors | Contrast ratio and text-size baseline | Local only |
 | **RTL Stress Preview** | Arabic and English labels | Text length, capacity, long-token, and direction-preview signals | Local only |
+| **Image Compressor** | One JPG, PNG, or WebP image up to 20 MB | Compressed WebP/JPEG preview and browser download | Local only |
 
 ## Local development
 
@@ -27,7 +28,7 @@ npm test
 
 ## Deliberate limitations
 
-Mizan Tools does **not** claim WCAG conformance, legal compliance, comprehensive RTL correctness, or a substitute for native-language and accessibility review. The scanner checks deterministic patterns in pasted text; it does not crawl a URL, collect user code, or execute arbitrary JavaScript.
+Mizan Tools does **not** claim WCAG conformance, legal compliance, comprehensive RTL correctness, or a substitute for native-language and accessibility review. The scanner checks deterministic patterns in pasted text; it does not crawl a URL, collect user code, or execute arbitrary JavaScript. Image compression occurs in the browser canvas: the current release accepts JPG, PNG, and WebP up to 20 MB; JPEG output flattens PNG transparency onto white, while WebP is the default format for retaining transparency where supported.
 
 ## Roadmap
 

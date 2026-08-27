@@ -1,8 +1,11 @@
 import { assessTextStress, compareTranslationJson, contrastCheck, scanRtlSource } from "./engine.js";
+import { compressImage, createDownloadName, formatBytes, validateImageFile } from "./image-compressor.js";
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[char]);
 let currentReport = null;
+let sourcePreviewUrl = null;
+let compressedPreviewUrl = null;
 
 function setActiveTool(tool) {
   document.querySelectorAll("[data-tool-button]").forEach((button) => button.classList.toggle("is-active", button.dataset.toolButton === tool));
@@ -32,6 +35,12 @@ function renderStressReport(report) {
   const summary = report.status === "ready" ? "لا توجد إشارة طول بارزة" : "ملاحظات تحتاج مراجعة";
   const findings = report.findings.length ? `<div class="issue-list">${report.findings.map((finding) => `<article class="issue issue--${finding.level === "info" ? "info" : "warning"}"><span class="issue__line">${finding.level === "info" ? "i" : "!"}</span><div><strong>${escapeHtml(finding.title)}</strong><p>${escapeHtml(finding.advice)}</p></div><em>${finding.level === "info" ? "سياق" : "اختبر"}</em></article>`).join("")}</div>` : '<div class="empty-state"><strong>المكوّن يتسع للنصوص الحالية.</strong><span>افحصه أيضًا داخل عرض الهاتف وعند تغيير حجم الخط.</span></div>';
   return `<div class="stress-summary"><div><span>العربية</span><b>${report.arabicLength}</b></div><div><span>الإنجليزية</span><b>${report.englishLength}</b></div><div><span>الحد التجريبي</span><b>${report.capacity}</b></div></div><div class="stress-status ${report.status}">${summary}</div>${findings}`;
+}
+
+function renderImageResult(report) {
+  const saved = report.originalBytes - report.compressedBytes;
+  const percent = report.originalBytes ? Math.max(0, Math.round((saved / report.originalBytes) * 100)) : 0;
+  return `<div class="image-result-summary"><div><span>الأصل</span><b>${formatBytes(report.originalBytes)}</b></div><div><span>النتيجة</span><b>${formatBytes(report.compressedBytes)}</b></div><div><span>التوفير</span><b>${percent}%</b></div></div><p class="image-result-note">${report.width} × ${report.height} · ${report.mime.replace("image/", "").toUpperCase()}${report.resized ? " · تم تصغير الأبعاد" : ""}</p>`;
 }
 
 function updateContrastPreview() {
@@ -74,10 +83,63 @@ function runStressPreview(event) {
   $("#stress-results").innerHTML = renderStressReport(currentReport);
 }
 
+function showOriginalImage(file) {
+  if (sourcePreviewUrl) URL.revokeObjectURL(sourcePreviewUrl);
+  sourcePreviewUrl = URL.createObjectURL(file);
+  $("#image-original-preview").src = sourcePreviewUrl;
+  $("#image-file-name").textContent = file.name;
+  $("#image-original-meta").textContent = `${formatBytes(file.size)} · جاهز للضغط محليًا`;
+  $("#image-original-card").hidden = false;
+  $("#image-empty-preview").hidden = true;
+}
+
+async function runImageCompression(event) {
+  event.preventDefault();
+  const file = $("#image-file").files[0];
+  const error = validateImageFile(file);
+  if (error) { $("#image-results").innerHTML = `<div class="empty-state is-error"><strong>${escapeHtml(error)}</strong></div>`; return; }
+  const button = $("#compress-image-button");
+  button.disabled = true;
+  button.textContent = "جاري الضغط محليًا…";
+  try {
+    const result = await compressImage(file, { quality: Number($("#image-quality").value) / 100, maxEdge: Number($("#image-max-edge").value), mime: $("#image-format").value });
+    if (compressedPreviewUrl) URL.revokeObjectURL(compressedPreviewUrl);
+    compressedPreviewUrl = URL.createObjectURL(result.blob);
+    $("#image-compressed-preview").src = compressedPreviewUrl;
+    $("#image-compressed-card").hidden = false;
+    const download = $("#image-download");
+    download.href = compressedPreviewUrl;
+    download.download = createDownloadName(file.name, result.mime);
+    download.hidden = false;
+    currentReport = { type: "image-compression", originalBytes: file.size, compressedBytes: result.blob.size, width: result.width, height: result.height, resized: result.resized, mime: result.mime };
+    $("#image-results").innerHTML = renderImageResult(currentReport);
+  } catch (compressionError) {
+    $("#image-results").innerHTML = `<div class="empty-state is-error"><strong>${escapeHtml(compressionError.message || "تعذر ضغط الصورة.")}</strong></div>`;
+  } finally {
+    button.disabled = false;
+    button.innerHTML = 'ضغط الصورة <span>↙</span>';
+  }
+}
+
 $("#rtl-form").onsubmit = runRtlScan;
 $("#json-form").onsubmit = runJsonComparison;
 $("#contrast-form").onsubmit = runContrastCheck;
 $("#stress-form").onsubmit = runStressPreview;
+$("#image-form").onsubmit = runImageCompression;
+
+$("#image-file").addEventListener("change", () => {
+  const file = $("#image-file").files[0];
+  const error = validateImageFile(file);
+  $("#image-compressed-card").hidden = true;
+  $("#image-download").hidden = true;
+  if (error) { $("#image-results").innerHTML = `<div class="empty-state is-error"><strong>${escapeHtml(error)}</strong></div>`; return; }
+  showOriginalImage(file);
+  $("#image-results").innerHTML = '<div class="empty-state"><strong>اضبط الإعدادات ثم اضغط «ضغط الصورة».</strong><span>لا تغادر الصورة جهازك في أي مرحلة.</span></div>';
+});
+
+$("#image-quality").addEventListener("input", () => {
+  $("#image-quality-value").textContent = $("#image-quality").value;
+});
 
 [["#foreground", "#foregroundText"], ["#background", "#backgroundText"]].forEach(([color, text]) => {
   $(color).addEventListener("input", updateContrastPreview);
@@ -93,5 +155,5 @@ $("#copy-report").addEventListener("click", async () => {
 
 document.querySelectorAll("[data-tool-button]").forEach((button) => button.addEventListener("click", () => setActiveTool(button.dataset.toolButton)));
 const initialTool = location.hash.replace("#", "");
-if (["rtl", "json", "contrast", "stress"].includes(initialTool)) setActiveTool(initialTool);
+if (["rtl", "json", "contrast", "stress", "image"].includes(initialTool)) setActiveTool(initialTool);
 updateContrastPreview();
