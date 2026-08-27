@@ -13,7 +13,8 @@ Mizan Tools should become a recognizable collection of **Arabic-first engineerin
 | 3 | Contrast Baseline | Low contrast in components | Small, instant, and useful across every product language |
 | 4 | Image Compressor | Large image assets delay web pages | Delivered locally with format, quality, resize, preview, and download controls |
 | 5 | RTL Stress Preview | Reveal overflow with long Arabic labels | Delivered in the first web release as a local component preview |
-| 6 | Locale Metadata Validator | Missing `lang`, `dir`, and metadata contracts in JSON | Natural next step after key parity, image hygiene, and stress testing |
+| 6 | Video Cover Inspector | Creators need a quick way to inspect public YouTube/TikTok cover art with source attribution | Delivered using documented oEmbed and thumbnail paths; no video download |
+| 7 | Locale Metadata Validator | Missing `lang`, `dir`, and metadata contracts in JSON | Natural next step after key parity, image hygiene, and stress testing |
 
 ## Growth approach
 

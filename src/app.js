@@ -1,5 +1,6 @@
 import { assessTextStress, compareTranslationJson, contrastCheck, scanRtlSource } from "./engine.js";
 import { compressImage, createDownloadName, formatBytes, validateImageFile } from "./image-compressor.js";
+import { downloadCoverForAuthorizedUse, resolveVideoCover } from "./video-cover.js";
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[char]);
@@ -41,6 +42,12 @@ function renderImageResult(report) {
   const saved = report.originalBytes - report.compressedBytes;
   const percent = report.originalBytes ? Math.max(0, Math.round((saved / report.originalBytes) * 100)) : 0;
   return `<div class="image-result-summary"><div><span>الأصل</span><b>${formatBytes(report.originalBytes)}</b></div><div><span>النتيجة</span><b>${formatBytes(report.compressedBytes)}</b></div><div><span>التوفير</span><b>${percent}%</b></div></div><p class="image-result-note">${report.width} × ${report.height} · ${report.mime.replace("image/", "").toUpperCase()}${report.resized ? " · تم تصغير الأبعاد" : ""}</p>`;
+}
+
+function renderVideoCover(report) {
+  const dimensions = report.imageWidth && report.imageHeight ? `${report.imageWidth} × ${report.imageHeight}` : "الأبعاد لم تُرجعها المنصة";
+  const download = report.canBrowserDownload ? '<button class="cover-download" id="cover-download" type="button">تنزيل الغلاف للاستخدام المصرح ↙</button>' : '<span class="cover-download cover-download--source">افتح الغلاف من مصدر TikTok الرسمي</span>';
+  return `<article class="cover-card"><img src="${escapeHtml(report.imageUrl)}" alt="غلاف ${escapeHtml(report.title)}" referrerpolicy="no-referrer" /><div class="cover-card__body"><span class="cover-platform">${escapeHtml(report.platform)}</span><h4>${escapeHtml(report.title)}</h4><p>بواسطة <a href="${escapeHtml(report.authorUrl)}" target="_blank" rel="noreferrer">${escapeHtml(report.authorName)}</a></p><div class="cover-meta"><span>${dimensions}</span><a href="${escapeHtml(report.sourceUrl)}" target="_blank" rel="noreferrer">فتح الفيديو الأصلي ↗</a></div><div class="cover-actions"><a class="cover-open" href="${escapeHtml(report.imageUrl)}" target="_blank" rel="noreferrer">فتح الغلاف ↗</a>${download}</div><small>اعرض الإسناد واستخدم الغلاف فقط عندما تملك الحق أو الإذن المناسب.</small></div></article>`;
 }
 
 function updateContrastPreview() {
@@ -121,11 +128,37 @@ async function runImageCompression(event) {
   }
 }
 
+async function runVideoCoverInspector(event) {
+  event.preventDefault();
+  const input = $("#video-cover-url").value;
+  const button = $("#inspect-cover-button");
+  button.disabled = true;
+  button.textContent = "جاري جلب البيانات الرسمية…";
+  try {
+    currentReport = { type: "video-cover", ...(await resolveVideoCover(input)) };
+    $("#cover-results").innerHTML = renderVideoCover(currentReport);
+    const downloadButton = $("#cover-download");
+    if (downloadButton) downloadButton.addEventListener("click", async () => {
+      downloadButton.disabled = true;
+      downloadButton.textContent = "جاري التجهيز…";
+      try { await downloadCoverForAuthorizedUse(currentReport.imageUrl, `${currentReport.platform.toLowerCase()}-thumbnail.jpg`); }
+      catch (downloadError) { downloadButton.textContent = "تعذر تنزيل الغلاف"; }
+      finally { setTimeout(() => { downloadButton.disabled = false; downloadButton.textContent = "تنزيل الغلاف للاستخدام المصرح ↙"; }, 1200); }
+    });
+  } catch (coverError) {
+    $("#cover-results").innerHTML = `<div class="empty-state is-error"><strong>${escapeHtml(coverError.message || "تعذر جلب الغلاف.")}</strong><span>تحقق من أن الرابط عام ومن YouTube أو TikTok.</span></div>`;
+  } finally {
+    button.disabled = false;
+    button.innerHTML = 'فحص الرابط <span>↙</span>';
+  }
+}
+
 $("#rtl-form").onsubmit = runRtlScan;
 $("#json-form").onsubmit = runJsonComparison;
 $("#contrast-form").onsubmit = runContrastCheck;
 $("#stress-form").onsubmit = runStressPreview;
 $("#image-form").onsubmit = runImageCompression;
+$("#cover-form").onsubmit = runVideoCoverInspector;
 
 $("#image-file").addEventListener("change", () => {
   const file = $("#image-file").files[0];
@@ -155,5 +188,5 @@ $("#copy-report").addEventListener("click", async () => {
 
 document.querySelectorAll("[data-tool-button]").forEach((button) => button.addEventListener("click", () => setActiveTool(button.dataset.toolButton)));
 const initialTool = location.hash.replace("#", "");
-if (["rtl", "json", "contrast", "stress", "image"].includes(initialTool)) setActiveTool(initialTool);
+if (["rtl", "json", "contrast", "stress", "image", "cover"].includes(initialTool)) setActiveTool(initialTool);
 updateContrastPreview();

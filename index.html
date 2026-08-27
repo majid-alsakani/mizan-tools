@@ -24,7 +24,7 @@
         <div class="hero__eyebrow"><i></i> أدوات عربية للمطورين والمصممين</div>
         <h1 id="hero-title">افحص ما ينساه<br /><span>الترجمة وحدها.</span></h1>
         <p>ابدأ من التفاصيل التي تكسر الواجهات: اتجاه النص، خصائص CSS، مفاتيح الترجمة، وتباين الألوان. تعمل الأدوات داخل المتصفح؛ لا نرفع النص الملصوق أو الملفات إلى خادم.</p>
-        <div class="hero__facts"><span><b>05</b> أدوات مجانية</span><span><b>0</b> ملفات مرفوعة</span><span><b>محلي</b> أولًا</span></div>
+        <div class="hero__facts"><span><b>06</b> أدوات مجانية</span><span><b>0</b> ملفات مرفوعة</span><span><b>محلي</b> أولًا</span></div>
       </section>
 
       <section id="tools" class="tool-workbench" aria-labelledby="tools-title">
@@ -35,6 +35,7 @@
           <button class="tool-tab" data-tool-button="contrast" role="tab" aria-selected="false"><span>03</span> فاحص التباين</button>
           <button class="tool-tab" data-tool-button="stress" role="tab" aria-selected="false"><span>04</span> ضغط النص RTL</button>
           <button class="tool-tab" data-tool-button="image" role="tab" aria-selected="false"><span>05</span> ضغط الصور</button>
+          <button class="tool-tab" data-tool-button="cover" role="tab" aria-selected="false"><span>06</span> غلاف الفيديو</button>
         </div>
 
         <section class="tool-panel" data-tool-panel="rtl" role="tabpanel" aria-label="فاحص RTL وCSS">
@@ -60,6 +61,11 @@
         <section class="tool-panel" data-tool-panel="image" role="tabpanel" aria-label="ضغط الصور" hidden>
           <div class="tool-panel__intro"><div><span class="eyebrow-label">Image Compressor</span><h3>حجم أصغر، من جهازك مباشرة.</h3></div><p>اختر JPG أو PNG أو WebP، واضبط الجودة والحافة القصوى، ثم نزّل النتيجة. لا تُرفع الصورة إلى خادم ولا تُحفظ لدينا.</p></div>
           <form id="image-form" class="image-grid"><div class="image-controls"><label class="image-dropzone" for="image-file"><input id="image-file" type="file" accept="image/jpeg,image/png,image/webp" /><span class="image-dropzone__icon">↓</span><strong>اختر صورة من جهازك</strong><small>JPG · PNG · WebP · حتى 20 MB</small></label><label class="range-control"><span>الجودة <b id="image-quality-value">78</b>%</span><input id="image-quality" type="range" min="45" max="95" value="78" /></label><label class="select-control"><span>الصيغة الناتجة</span><select id="image-format"><option value="image/webp">WebP — افتراضي</option><option value="image/jpeg">JPEG — حجم أصغر غالبًا</option></select></label><label class="select-control"><span>أكبر ضلع</span><select id="image-max-edge"><option value="2560">2560 px — متوازن</option><option value="1920">1920 px — للويب</option><option value="1280">1280 px — مشاركة سريعة</option><option value="6000">احتفظ بالحجم الأصلي</option></select></label></div><div class="image-preview-panel"><div class="image-card" id="image-original-card" hidden><span>الأصل</span><img id="image-original-preview" alt="معاينة الصورة الأصلية" /><small id="image-file-name"></small><em id="image-original-meta"></em></div><div class="image-card" id="image-compressed-card" hidden><span>النتيجة</span><img id="image-compressed-preview" alt="معاينة الصورة المضغوطة" /><a id="image-download" class="image-download" hidden>تنزيل النسخة المضغوطة ↙</a></div><div class="image-empty-preview" id="image-empty-preview"><span>معاينة خاصة</span><p>لا يبدأ الضغط قبل أن تختار صورة من جهازك.</p></div></div><div class="result-box image-result-box" id="image-results" aria-live="polite"><div class="empty-state"><strong>اختر صورة للبدء.</strong><span>الصور لا تغادر متصفحك.</span></div></div><button class="run-button" id="compress-image-button" type="submit">ضغط الصورة <span>↙</span></button></form>
+        </section>
+
+        <section class="tool-panel" data-tool-panel="cover" role="tabpanel" aria-label="فاحص غلاف الفيديو" hidden>
+          <div class="tool-panel__intro"><div><span class="eyebrow-label">Video Cover Inspector</span><h3>حلّل الغلاف مع إبقاء الإسناد ظاهرًا.</h3></div><p>ألصق رابط فيديو عام من YouTube أو TikTok. نستخرج الغلاف وبيانات المنشئ من مسارات المنصة الرسمية، من دون تنزيل الفيديو.</p></div>
+          <form id="cover-form" class="cover-grid"><label class="input-group cover-input"><span>رابط YouTube أو TikTok</span><input id="video-cover-url" dir="ltr" type="url" placeholder="https://www.youtube.com/watch?v=…" required /></label><div class="cover-policy"><span>سياسة الاستخدام</span><p>الغلاف للعرض والتحليل. احتفظ بالإسناد، ونزّل المحتوى فقط إذا كنت المالك أو تملك إذنًا مناسبًا.</p></div><div class="result-box cover-result-box" id="cover-results" aria-live="polite"><div class="empty-state"><strong>ألصق رابطًا عامًا للبدء.</strong><span>نظهر اسم المنصة والمنشئ والرابط الأصلي مع الغلاف.</span></div></div><button class="run-button" id="inspect-cover-button" type="submit">فحص الرابط <span>↙</span></button></form>
         </section>
       </section>
 
