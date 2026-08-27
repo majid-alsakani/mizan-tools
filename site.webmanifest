@@ -1,0 +1,11 @@
+{
+  "name": "Mizan Tools",
+  "short_name": "Mizan",
+  "description": "أدوات عربية مجانية ومحلية للمطورين والمصممين.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0c1422",
+  "theme_color": "#0c1422"
+}
