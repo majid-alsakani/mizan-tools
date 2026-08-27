@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compareTranslationJson, contrastCheck, scanRtlSource } from "../src/engine.js";
+import { assessTextStress, compareTranslationJson, contrastCheck, scanRtlSource } from "../src/engine.js";
 
 test("detects physical CSS properties and missing RTL metadata", () => {
   const issues = scanRtlSource('<html lang="ar"><style>.card { margin-left: 12px; text-align: left; }</style>');
@@ -20,4 +20,11 @@ test("calculates a known contrast ratio and validates colors", () => {
   assert.equal(contrastCheck("#000000", "#FFFFFF").ratio, 21);
   assert.equal(contrastCheck("#000", "#fff").normalTextAA, true);
   assert.ok(contrastCheck("not-a-color", "#fff").error);
+});
+
+test("flags text stress from capacity, language length differences, and long tokens", () => {
+  const result = assessTextStress({ arabic: "عنوان واجهة طويل جدًا لاختبار المساحة", english: "Short", capacity: 14 });
+  assert.equal(result.status, "review");
+  assert.equal(result.findings.some((finding) => finding.title.includes("السعة")), true);
+  assert.equal(result.findings.some((finding) => finding.title.includes("فرق ملحوظ")), true);
 });

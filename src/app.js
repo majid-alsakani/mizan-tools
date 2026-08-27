@@ -1,4 +1,4 @@
-import { compareTranslationJson, contrastCheck, scanRtlSource } from "./engine.js";
+import { assessTextStress, compareTranslationJson, contrastCheck, scanRtlSource } from "./engine.js";
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[char]);
@@ -26,6 +26,12 @@ function renderContrast(report, foreground, background) {
   if (report.error) return `<div class="empty-state is-error"><strong>${report.error}</strong></div>`;
   const status = report.normalTextAA ? "is-good" : report.largeTextAA ? "is-warn" : "is-bad";
   return `<div class="contrast-result ${status}"><div class="contrast-swatch" style="background:${escapeHtml(background)};color:${escapeHtml(foreground)}">Aa</div><div><span>نسبة التباين</span><strong>${report.ratio.toFixed(2)}:1</strong><p>${report.label}</p></div></div><p class="result-caveat">النتيجة مؤشر رياضي للونين ثابتين؛ لا تثبت وحدها توافق صفحة أو منتج كامل مع WCAG.</p>`;
+}
+
+function renderStressReport(report) {
+  const summary = report.status === "ready" ? "لا توجد إشارة طول بارزة" : "ملاحظات تحتاج مراجعة";
+  const findings = report.findings.length ? `<div class="issue-list">${report.findings.map((finding) => `<article class="issue issue--${finding.level === "info" ? "info" : "warning"}"><span class="issue__line">${finding.level === "info" ? "i" : "!"}</span><div><strong>${escapeHtml(finding.title)}</strong><p>${escapeHtml(finding.advice)}</p></div><em>${finding.level === "info" ? "سياق" : "اختبر"}</em></article>`).join("")}</div>` : '<div class="empty-state"><strong>المكوّن يتسع للنصوص الحالية.</strong><span>افحصه أيضًا داخل عرض الهاتف وعند تغيير حجم الخط.</span></div>';
+  return `<div class="stress-summary"><div><span>العربية</span><b>${report.arabicLength}</b></div><div><span>الإنجليزية</span><b>${report.englishLength}</b></div><div><span>الحد التجريبي</span><b>${report.capacity}</b></div></div><div class="stress-status ${report.status}">${summary}</div>${findings}`;
 }
 
 function updateContrastPreview() {
@@ -57,9 +63,21 @@ function runContrastCheck(event) {
   $("#contrast-results").innerHTML = renderContrast(currentReport, foreground, background);
 }
 
+function runStressPreview(event) {
+  event.preventDefault();
+  const arabic = $("#stress-ar").value;
+  const english = $("#stress-en").value;
+  const capacity = Number($("#stress-capacity").value) || 34;
+  currentReport = { type: "rtl-stress", ...assessTextStress({ arabic, english, capacity }) };
+  $("#stress-ar-preview").textContent = arabic || "عنوان عربي للمكوّن";
+  $("#stress-en-preview").textContent = english || "Component title";
+  $("#stress-results").innerHTML = renderStressReport(currentReport);
+}
+
 $("#rtl-form").onsubmit = runRtlScan;
 $("#json-form").onsubmit = runJsonComparison;
 $("#contrast-form").onsubmit = runContrastCheck;
+$("#stress-form").onsubmit = runStressPreview;
 
 [["#foreground", "#foregroundText"], ["#background", "#backgroundText"]].forEach(([color, text]) => {
   $(color).addEventListener("input", updateContrastPreview);
@@ -75,5 +93,5 @@ $("#copy-report").addEventListener("click", async () => {
 
 document.querySelectorAll("[data-tool-button]").forEach((button) => button.addEventListener("click", () => setActiveTool(button.dataset.toolButton)));
 const initialTool = location.hash.replace("#", "");
-if (["rtl", "json", "contrast"].includes(initialTool)) setActiveTool(initialTool);
+if (["rtl", "json", "contrast", "stress"].includes(initialTool)) setActiveTool(initialTool);
 updateContrastPreview();

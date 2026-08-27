@@ -2,7 +2,7 @@
 
 > **Free, browser-local utilities for RTL, translation-key, and color-contrast checks.**
 
-Mizan Tools is a small, Arabic-first tool platform for developers and designers. The first release runs entirely in the browser and includes three related checks: physical CSS properties that may break bidirectional layouts, differences between `ar.json` and `en.json`, and a color-contrast baseline.
+Mizan Tools is a small, Arabic-first tool platform for developers and designers. The first release runs entirely in the browser and includes four related checks: physical CSS properties that may break bidirectional layouts, differences between `ar.json` and `en.json`, a color-contrast baseline, and a RTL/LTR text-stress preview.
 
 ## Why this focus?
 
@@ -15,6 +15,7 @@ The product intentionally begins with a narrow, repeated workflow rather than ge
 | **RTL & CSS Scan** | HTML or CSS pasted in the browser | Directional-property findings and logical-CSS alternatives | Local only |
 | **Translation Key Diff** | `ar.json` and `en.json` text | Missing keys, type differences, placeholder drift | Local only |
 | **Contrast Baseline** | Two HEX colors | Contrast ratio and text-size baseline | Local only |
+| **RTL Stress Preview** | Arabic and English labels | Text length, capacity, long-token, and direction-preview signals | Local only |
 
 ## Local development
 

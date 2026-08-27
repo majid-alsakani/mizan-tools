@@ -102,3 +102,31 @@ export function contrastCheck(foreground, background) {
   const ratio = (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
   return { ratio, normalTextAA: ratio >= 4.5, largeTextAA: ratio >= 3, label: ratio >= 4.5 ? "مناسب كنقطة بداية للنص العادي" : ratio >= 3 ? "مناسب للنص الكبير فقط" : "التباين منخفض؛ غيّر أحد اللونين" };
 }
+
+function visibleLength(value) {
+  return Array.from(String(value || "").trim()).length;
+}
+
+export function assessTextStress({ arabic, english, capacity = 34 }) {
+  const arLength = visibleLength(arabic);
+  const enLength = visibleLength(english);
+  const findings = [];
+  const maximum = Math.max(arLength, enLength);
+  const ratio = enLength ? arLength / enLength : null;
+
+  if (!arabic.trim() || !english.trim()) {
+    findings.push({ level: "warning", title: "أضف النسختين العربية والإنجليزية", advice: "المقارنة تصبح مفيدة فقط عند اختبار النصين المقابلين لنفس المكوّن." });
+  }
+  if (maximum > capacity) {
+    findings.push({ level: "warning", title: "يتجاوز النص السعة المقترحة للمكوّن", advice: `أطول نص يحتوي ${maximum} حرفًا مقابل حد تجريبي ${capacity}. جرّب التفاف النص أو توسيع مساحة المكوّن.` });
+  }
+  if (ratio !== null && (ratio > 1.35 || ratio < 0.74)) {
+    findings.push({ level: "info", title: "فرق ملحوظ بين طول الترجمتين", advice: `نسبة العربية إلى الإنجليزية هي ${ratio.toFixed(2)}. راجع سلوك التخطيط عند الترجمة بدل افتراض طول متطابق.` });
+  }
+  const longToken = [arabic, english].flatMap((value) => String(value).split(/\s+/)).find((token) => visibleLength(token) > 22);
+  if (longToken) {
+    findings.push({ level: "info", title: "كلمة أو رمز طويل بلا مسافة", advice: `القيمة «${longToken.slice(0, 24)}${longToken.length > 24 ? "…" : ""}» قد تسبب overflow؛ اختبر قواعد الالتفاف أو القص بوضوح.` });
+  }
+
+  return { arabicLength: arLength, englishLength: enLength, capacity, ratio, findings, status: findings.some((finding) => finding.level === "warning") ? "review" : "ready" };
+}

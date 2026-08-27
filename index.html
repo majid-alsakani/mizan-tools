@@ -24,7 +24,7 @@
         <div class="hero__eyebrow"><i></i> أدوات عربية للمطورين والمصممين</div>
         <h1 id="hero-title">افحص ما ينساه<br /><span>الترجمة وحدها.</span></h1>
         <p>ابدأ من التفاصيل التي تكسر الواجهات: اتجاه النص، خصائص CSS، مفاتيح الترجمة، وتباين الألوان. تعمل الأدوات داخل المتصفح؛ لا نرفع النص الملصوق أو الملفات إلى خادم.</p>
-        <div class="hero__facts"><span><b>03</b> أدوات مجانية</span><span><b>0</b> ملفات مرفوعة</span><span><b>RTL</b> أولًا</span></div>
+        <div class="hero__facts"><span><b>04</b> أدوات مجانية</span><span><b>0</b> ملفات مرفوعة</span><span><b>RTL</b> أولًا</span></div>
       </section>
 
       <section id="tools" class="tool-workbench" aria-labelledby="tools-title">
@@ -33,6 +33,7 @@
           <button class="tool-tab is-active" data-tool-button="rtl" role="tab" aria-selected="true"><span>01</span> فاحص RTL وCSS</button>
           <button class="tool-tab" data-tool-button="json" role="tab" aria-selected="false"><span>02</span> مقارنة الترجمة</button>
           <button class="tool-tab" data-tool-button="contrast" role="tab" aria-selected="false"><span>03</span> فاحص التباين</button>
+          <button class="tool-tab" data-tool-button="stress" role="tab" aria-selected="false"><span>04</span> ضغط النص RTL</button>
         </div>
 
         <section class="tool-panel" data-tool-panel="rtl" role="tabpanel" aria-label="فاحص RTL وCSS">
@@ -48,6 +49,11 @@
         <section class="tool-panel" data-tool-panel="contrast" role="tabpanel" aria-label="فاحص تباين اللون" hidden>
           <div class="tool-panel__intro"><div><span class="eyebrow-label">Contrast Baseline</span><h3>تباين واضح قبل التفاصيل الجميلة.</h3></div><p>احسب نسبة التباين للونين ثابتين كنقطة بداية. لا تغني النتيجة عن الاختبار بالسياق الحقيقي أو المراجعة البشرية.</p></div>
           <form id="contrast-form" class="contrast-grid"><div class="color-inputs"><label><span>لون النص</span><input id="foreground" type="color" value="#EAF4F0" /><input id="foregroundText" value="#EAF4F0" dir="ltr" /></label><label><span>لون الخلفية</span><input id="background" type="color" value="#0C1422" /><input id="backgroundText" value="#0C1422" dir="ltr" /></label></div><div class="contrast-preview" id="contrast-preview">نص عربي واضح<br /><small dir="ltr">Clear interface text</small></div><div class="result-box" id="contrast-results" aria-live="polite"><div class="empty-state"><strong>اختر اللونين ثم احسب النسبة.</strong></div></div><button class="run-button" type="submit">حساب التباين <span>↙</span></button></form>
+        </section>
+
+        <section class="tool-panel" data-tool-panel="stress" role="tabpanel" aria-label="معاينة ضغط النص RTL" hidden>
+          <div class="tool-panel__intro"><div><span class="eyebrow-label">RTL Stress Preview</span><h3>اختبر ما يحدث عندما يكبر النص.</h3></div><p>أدخل نسختين لنفس العنوان. نعرضهما داخل مكوّن واجهة محدود ونرصد الطول، الفرق، والكلمات الطويلة قبل الوصول إلى الهاتف.</p></div>
+          <form id="stress-form" class="stress-grid"><div class="stress-controls"><label class="input-group"><span>العنوان العربي</span><input id="stress-ar" placeholder="إرسال تقرير تدقيق الوصولية" /></label><label class="input-group"><span>English title</span><input id="stress-en" dir="ltr" placeholder="Send accessibility report" /></label><label class="capacity-input"><span>السعة التجريبية</span><input id="stress-capacity" type="number" min="12" max="140" value="34" dir="ltr" /> <small>حرفًا</small></label></div><div class="stress-preview" aria-label="معاينة نصوص RTL وLTR"><div class="stress-preview__chrome"><i></i><i></i><i></i><span>Component preview</span></div><div class="stress-preview__body"><span class="stress-preview__tag">RTL</span><strong id="stress-ar-preview">عنوان عربي للمكوّن</strong><small>وصف قصير يشرح الإجراء للمستخدم.</small><button type="button">إجراء أساسي <b aria-hidden="true">←</b></button></div><div class="stress-preview__body stress-preview__body--ltr" dir="ltr"><span class="stress-preview__tag">LTR</span><strong id="stress-en-preview">Component title</strong><small>Short helper text for the action.</small><button type="button">Primary action <b aria-hidden="true">→</b></button></div></div><div class="result-box" id="stress-results" aria-live="polite"><div class="empty-state"><strong>أدخل النصين ثم اختبر المكوّن.</strong><span>المعاينة لا ترفع النص أو تحفظه.</span></div></div><button class="run-button" type="submit">تحليل ضغط النص <span>↙</span></button></form>
         </section>
       </section>
 
